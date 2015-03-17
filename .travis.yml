@@ -1,3 +1,4 @@
+sudo: false
 language: python
 
 python:
@@ -13,27 +14,27 @@ matrix:
 
 install:
     #removing unwanted packages
-    - sudo apt-get remove --purge -y $(< unwanted_packages)
+    - apt-get remove --purge -y $(< unwanted_packages)
     # update aptitude
-    - sudo apt-get update -y
-    - sudo apt-get install aptitude -y
+    - apt-get update -y
+    - apt-get install aptitude -y
 
     # install aptitude packages
-    - LDFLAGS=-lm sudo aptitude install -y $(< requirements)
+    - LDFLAGS=-lm aptitude install -y $(< requirements)
 
-    - sudo apt-get autoremove -y
+    - apt-get autoremove -y
 
     - df -h
 
     # ffmpeg
     - wget http://ffmpeg.org/releases/ffmpeg-2.6.1.tar.bz2
     - tar xjvf ffmpeg-2.6.1.tar.bz2
-    - cd ffmpeg-2.6.1 && ./configure --enable-gpl --enable-libx264 --enable-libvpx && make && sudo make install && cd ..
+    - cd ffmpeg-2.6.1 && ./configure --enable-gpl --enable-libx264 --enable-libvpx && make && make install && cd ..
 
     # webp - compiling from source
     - wget "https://webp.googlecode.com/files/libwebp-0.4.0.tar.gz" -O libwebp-0.4.0.tar.gz
     - tar xvzf libwebp-0.4.0.tar.gz
-    - cd libwebp-0.4.0 && ./configure --enable-libwebpmux --enable-libwebpdemux --enable-libwebpdecoder && make && sudo make install; cd ..
+    - cd libwebp-0.4.0 && ./configure --enable-libwebpmux --enable-libwebpdemux --enable-libwebpdecoder && make && make install; cd ..
     - sudo ldconfig
 
     # install python requirements
