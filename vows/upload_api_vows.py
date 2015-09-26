@@ -10,6 +10,7 @@
 
 from os.path import abspath, join, dirname, exists
 import re
+from mock import Mock
 
 from pyvows import Vows, expect
 from tornado_pyvows.context import TornadoHTTPContext
@@ -159,7 +160,7 @@ class PostingANewImage(ImageContext):
         importer = Importer(cfg)
         importer.import_modules()
 
-        ctx = Context(None, cfg, importer)
+        ctx = Context(Mock(), cfg, importer)
         application = ThumborServiceApp(ctx)
         return application
 
@@ -211,7 +212,6 @@ class PostingANewImage(ImageContext):
                 expect(headers).to_include('Location')
                 expect(headers['Location']).to_match(self.base_uri + r'/[^\/]{32}/' + self.filename)
 
-
         class Image(ImageContext):
             def topic(self, response):
                 return re.compile(self.base_uri + r'/([^\/]{32})/' + self.filename).search(
@@ -245,7 +245,6 @@ class PostingANewImage(ImageContext):
                 expect(headers).to_include('Location')
                 expect(headers['Location']).to_match(self.base_uri + r'/[^\/]{32}/' + self.filename)
 
-
         class Image(ImageContext):
             def topic(self, response):
                 return re.compile(self.base_uri + r'/([^\/]{32})/' + self.filename).search(
@@ -254,7 +253,6 @@ class PostingANewImage(ImageContext):
             def should_be_store_at_right_path(self, topic):
                 path = path_on_filesystem(topic)
                 expect(exists(path)).to_be_true()
-
 
     ##
     # Posting a new image without filename through the REST API
@@ -344,7 +342,7 @@ class ModifyingAnImage(ImageContext):
         importer = Importer(cfg)
         importer.import_modules()
 
-        ctx = Context(None, cfg, importer)
+        ctx = Context(Mock(), cfg, importer)
         application = ThumborServiceApp(ctx)
         return application
 
@@ -400,7 +398,7 @@ class PutLongerId(ImageContext):
         importer = Importer(cfg)
         importer.import_modules()
 
-        ctx = Context(None, cfg, importer)
+        ctx = Context(Mock(), cfg, importer)
         application = ThumborServiceApp(ctx)
         return application
 
@@ -423,7 +421,6 @@ class PutLongerId(ImageContext):
             def should_be_404_not_found(self, topic):
                 expect(topic).to_equal(404)
 
-
     ##
     # Store ID 36 length and return succefful if ID is OK for 36 first chararcters
     ##
@@ -433,7 +430,7 @@ class PutLongerId(ImageContext):
 
             self.filename = self.default_filename + '.jpg'
             self.put(path, {'Content-Type': 'image/jpeg'}, valid_image())
-            response = self.get( path + '123456', {'Accept': 'image/jpeg'})
+            response = self.get(path + '123456', {'Accept': 'image/jpeg'})
             return response
 
         class HttpStatusCode(ImageContext):
@@ -470,7 +467,7 @@ class DeletingAnImage(ImageContext):
         importer = Importer(cfg)
         importer.import_modules()
 
-        ctx = Context(None, cfg, importer)
+        ctx = Context(Mock(), cfg, importer)
         application = ThumborServiceApp(ctx)
         return application
 
@@ -537,7 +534,7 @@ class RetrievingAnImage(ImageContext):
         importer = Importer(cfg)
         importer.import_modules()
 
-        ctx = Context(None, cfg, importer)
+        ctx = Context(Mock(), cfg, importer)
         application = ThumborServiceApp(ctx)
         return application
 
@@ -568,7 +565,6 @@ class RetrievingAnImage(ImageContext):
 
             def should_be_MimeType(self, topic):
                 expect(topic).to_equal('image/jpeg')
-
 
     class WhenRetrievingAnUnknownImage(ImageContext):
         def topic(self):
@@ -608,7 +604,7 @@ class Validation(ImageContext):
 
         importer = Importer(cfg)
         importer.import_modules()
-        ctx = Context(None, cfg, importer)
+        ctx = Context(Mock(), cfg, importer)
         application = ThumborServiceApp(ctx)
         return application
 

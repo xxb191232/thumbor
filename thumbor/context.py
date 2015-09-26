@@ -44,9 +44,19 @@ class Context:
 
         self.filters_factory = FiltersFactory(self.modules.filters if self.modules else [])
         self.request_handler = request_handler
-        self.statsd_client = self.metrics # TODO statsd_client is deprecated, remove me on next minor version bump
+        self.statsd_client = self.metrics  # TODO statsd_client is deprecated, remove me on next minor version bump
         self.thread_pool = ThreadPool.instance(getattr(config, 'ENGINE_THREADPOOL_SIZE', 0))
         self.headers = {}
+        self.run_plugins('on_context_config')
+
+    def run_plugins(self, method_name, *args, **kw):
+        if self.modules is None or not self.modules.plugins:
+            return
+
+        for plugin in self.modules.plugins:
+            method = getattr(plugin, method_name, None)
+            if method is not None:
+                method(self, *args, **kw)
 
 
 class ServerParameters(object):
@@ -217,6 +227,12 @@ class ContextImporter:
         self.loader = importer.loader
         self.detectors = importer.detectors
         self.filters = importer.filters
+
+        self.plugins = []
+        if importer.plugins is not None:
+            for plugin in importer.plugins:
+                self.plugins.append(plugin())
+
         self.optimizers = importer.optimizers
         self.url_signer = importer.url_signer
 
@@ -249,7 +265,8 @@ class ThreadPool(object):
         task.add_done_callback(
             lambda future: tornado.ioloop.IOLoop.instance().add_callback(
                 functools.partial(callback, future)
-        ))
+            )
+        )
 
     def queue(self, operation, callback):
         if not self.pool:
@@ -261,4 +278,3 @@ class ThreadPool(object):
         if self.pool:
             print "Joining threads...."
             self.pool.shutdown()
-

@@ -8,6 +8,8 @@
 # http://www.opensource.org/licenses/mit-license
 # Copyright (c) 2011 globo.com timehome@corp.globo.com
 
+from mock import Mock
+
 from pyvows import Vows, expect
 
 from thumbor.filters.fill import Filter
@@ -30,7 +32,7 @@ def get_context():
     imp = Importer(conf)
     imp.import_modules()
     imp.filters = [Filter]
-    return Context(None, conf, imp)
+    return Context(Mock(), conf, imp)
 
 
 @Vows.batch

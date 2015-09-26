@@ -8,12 +8,14 @@
 # http://www.opensource.org/licenses/mit-license
 # Copyright (c) 2011 globo.com timehome@corp.globo.com
 
+from mock import Mock
 from pyvows import Vows, expect
 
-from thumbor.context import Context, ServerParameters
+from thumbor.context import Context
 from thumbor.importer import Importer
 from thumbor.config import Config
 import thumbor.metrics
+
 
 @Vows.batch
 class MetricsVows(Vows.Context):
@@ -21,7 +23,7 @@ class MetricsVows(Vows.Context):
     class CanCreateContextWithDefaultMetrics(Vows.Context):
 
         def topic(self):
-            ctx = Context()
+            ctx = Context(server=Mock())
             return ctx
 
         def should_not_be_null(self, topic):
@@ -38,7 +40,7 @@ class MetricsVows(Vows.Context):
             conf.METRICS = 'thumbor.metrics.logger_metrics'
             imp = Importer(conf)
             imp.import_modules()
-            return Context(None, conf, imp)
+            return Context(Mock(), conf, imp)
 
         def should_initialize_metrics(self, topic):
             expect(topic.metrics).to_be_instance_of(
@@ -56,7 +58,7 @@ class MetricsVows(Vows.Context):
             conf.METRICS = 'thumbor.metrics.statsd_metrics'
             imp = Importer(conf)
             imp.import_modules()
-            return Context(None, conf, imp)
+            return Context(Mock(), conf, imp)
 
         def should_initialize_metrics(self, topic):
             expect(topic.metrics).to_be_instance_of(

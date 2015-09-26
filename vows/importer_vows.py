@@ -20,6 +20,7 @@ from thumbor.result_storages.file_storage import Storage as result_file_storage
 from thumbor.detectors.face_detector import Detector as face_detector
 from thumbor.detectors import feature_detector
 from thumbor.filters.rgb import Filter as rgb_filter
+from thumbor.plugins.server_name import Plugin as server_name_plugin
 
 
 test_data = [
@@ -31,6 +32,7 @@ test_data = [
     ('RESULT_STORAGE', result_file_storage),
     ('DETECTORS', (face_detector,)),
     ('FILTERS', (rgb_filter,)),
+    ('PLUGINS', (server_name_plugin,)),
 ]
 
 
@@ -48,7 +50,8 @@ class ImporterVows(Vows.Context):
                     UPLOAD_PHOTO_STORAGE=r'thumbor.storages.file_storage',
                     RESULT_STORAGE=r'thumbor.result_storages.file_storage',
                     DETECTORS=['thumbor.detectors.face_detector'],
-                    FILTERS=['thumbor.filters.rgb']
+                    FILTERS=['thumbor.filters.rgb'],
+                    PLUGINS=['thumbor.plugins.server_name'],
                 )
 
                 yield data, complete_config

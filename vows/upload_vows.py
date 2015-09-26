@@ -9,6 +9,7 @@
 # Copyright (c) 2011 globo.com timehome@corp.globo.com
 
 import mimetypes
+from mock import Mock
 import urllib
 import hashlib
 from os.path import abspath, join, dirname, exists
@@ -104,7 +105,7 @@ class Upload(BaseContext):
 
         importer = Importer(cfg)
         importer.import_modules()
-        ctx = Context(None, cfg, importer)
+        ctx = Context(Mock(), cfg, importer)
         application = ThumborServiceApp(ctx)
         return application
 
@@ -254,7 +255,7 @@ class UploadWithoutDeletingAllowed(BaseContext):
 
         importer = Importer(cfg)
         importer.import_modules()
-        ctx = Context(None, cfg, importer)
+        ctx = Context(Mock(), cfg, importer)
         application = ThumborServiceApp(ctx)
         return application
 
@@ -292,7 +293,7 @@ class UploadWithMinWidthAndHeight(BaseContext):
 
         importer = Importer(cfg)
         importer.import_modules()
-        ctx = Context(None, cfg, importer)
+        ctx = Context(Mock(), cfg, importer)
         application = ThumborServiceApp(ctx)
         return application
 
@@ -327,7 +328,7 @@ class UploadWithMaxSize(BaseContext):
 
         importer = Importer(cfg)
         importer.import_modules()
-        ctx = Context(None, cfg, importer)
+        ctx = Context(Mock(), cfg, importer)
         application = ThumborServiceApp(ctx)
         return application
 

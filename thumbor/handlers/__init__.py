@@ -17,7 +17,6 @@ import re
 import tornado.web
 import tornado.gen as gen
 
-from thumbor import __version__
 from thumbor.storages.no_storage import Storage as NoStorage
 from thumbor.storages.mixed_storage import Storage as MixedStorage
 from thumbor.context import Context
@@ -227,7 +226,10 @@ class BaseHandler(tornado.web.RequestHandler):
             try:
                 result_last_modified = self.context.modules.result_storage.last_updated()
             except NotImplementedError:
-                logger.warn('last_updated method is not supported by your result storage service, hence If-Modified-Since & Last-Updated headers support is disabled.')
+                logger.warn(
+                    'last_updated method is not supported by your result storage service, hence If-Modified-Since & '
+                    'Last-Updated headers support is disabled.'
+                )
 
             if result_last_modified:
                 if 'If-Modified-Since' in self.request.headers:
@@ -278,7 +280,7 @@ class BaseHandler(tornado.web.RequestHandler):
             self.set_header('Cache-Control', 'max-age=' + str(max_age) + ',public')
             self.set_header('Expires', datetime.datetime.utcnow() + datetime.timedelta(seconds=max_age))
 
-        self.set_header('Server', 'Thumbor/%s' % __version__)
+        self.set_header('Server', context.server.name)
         self.set_header('Content-Type', content_type)
 
         if context.config.AUTO_WEBP and not context.request.engine.is_multiple() and context.request.engine.extension != '.webp':

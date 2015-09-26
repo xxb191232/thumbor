@@ -8,6 +8,8 @@
 # http://www.opensource.org/licenses/mit-license
 # Copyright (c) 2011 globo.com timehome@corp.globo.com
 
+from mock import Mock
+
 from pyvows import Vows, expect
 
 from thumbor.handlers import BaseHandler
@@ -22,14 +24,16 @@ class BaseHandlerVows(Vows.Context):
 
     class ShouldStoreHeaderOnContext(Vows.Context):
         def topic(self):
-            ctx = Context(None, Config(), None)
+            ctx = Context(Mock(), Config(), None)
             application = ThumborServiceApp(ctx)
             handler = BaseHandler(application, MagicMock())
             handler._transforms = []
             return handler
 
         def should_be_ThumborServiceApp(self, topic):
-            mocked_context = MagicMock(**{'config.MAX_AGE_TEMP_IMAGE': 30})
+            server = Mock()
+            server.name = "Thumbor/5.1.0"
+            mocked_context = MagicMock(**{'config.MAX_AGE_TEMP_IMAGE': 30, 'server': server})
             topic._write_results_to_client(mocked_context, '', 'image/jpeg')
             expect(mocked_context.headers).to_include('Expires')
             expect(mocked_context.headers).to_include('Server')
