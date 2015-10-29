@@ -69,7 +69,7 @@ Config.define(
     'Indicates whether thumbor should enable the EXPERIMENTAL support for animated gifs.', 'Imaging')
 
 Config.define(
-    'USE_GIFSICLE_ENGINE', False,
+    'USE_GIFSICLE_ENGINE', True,
     'Indicates whether thumbor should use gifsicle engine. Please note that smart cropping and filters are not '
     'supported for gifs using gifsicle (but won\'t give an error).', 'Imaging')
 

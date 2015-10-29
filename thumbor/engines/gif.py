@@ -33,6 +33,9 @@ class Engine(PILEngine):
     def is_multiple(self):
         return self.frame_count > 1
 
+    def can_convert_to_webp(self):
+        return True
+
     def update_image_info(self):
         self._is_multiple = False
 

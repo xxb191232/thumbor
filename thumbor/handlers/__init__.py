@@ -190,15 +190,15 @@ class BaseHandler(tornado.web.RequestHandler):
 
     def after_transform(self, context):
         finish_callback = functools.partial(self.finish_request, context)
-        if context.request.extension == '.gif' and context.config.USE_GIFSICLE_ENGINE:
-            finish_callback()
-        else:
-            self.filters_runner.apply_filters(thumbor.filters.PHASE_POST_TRANSFORM, finish_callback)
+        # if context.request.extension == '.gif' and context.config.USE_GIFSICLE_ENGINE:
+        #     finish_callback()
+        # else:
+        #     self.filters_runner.apply_filters(thumbor.filters.PHASE_POST_TRANSFORM, finish_callback)
+        self.filters_runner.apply_filters(thumbor.filters.PHASE_POST_TRANSFORM, finish_callback)
 
     def is_webp(self, context):
         return (context.config.AUTO_WEBP and
                 context.request.accepts_webp and
-                not context.request.engine.is_multiple() and
                 context.request.engine.can_convert_to_webp())
 
     def define_image_type(self, context, result):
@@ -240,6 +240,7 @@ class BaseHandler(tornado.web.RequestHandler):
                 quality = self.context.config.get('WEBP_QUALITY')
             else:
                 quality = self.context.config.QUALITY
+
         results = context.request.engine.read(image_extension, quality)
         if context.request.max_bytes is not None:
             results = self.reload_to_fit_in_kb(
